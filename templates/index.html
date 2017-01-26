@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html ng-app="Multimedia">
+	<head>
+
+		<link rel="stylesheet" type="text/css" href="../css/bootstrap_superhero.css">
+		<title>Multimedia Library Search</title>
+	</head>
+
+	<body >
+		<div class="container" ng-controller="iTunesCtrl">
+
+			<div class="row" id="headline">
+				<div class="col-sm-12">
+					<h1>Multimedia Search</h1>
+				</div>
+			</div>
+
+			<div class="row"></div>
+
+			<div class="row" id="header">
+				<div class="col-sm-3">
+					<div class="form-group">
+					      <label for="searchTerm">Enter your search criteria:</label>
+					      <input type="text" class="form-control" ng-model="searchTerm" ng-model-options="{ debounce: 500 }" sid="searchTerm" placeholder="Enter artist's name or song title">
+					</div>
+				</div>
+				
+				<div class="col-sm-1">
+				</div>
+				
+				<div class="col-sm-3">
+					<div class="form-group">
+					      <label for="searchService">Select a service:</label>
+						  <form>
+						    <label class="radio-inline">
+						    	<input ng-model="searchService" type="radio" name="searchService" value="iTunes">iTunes</label>
+
+						    <label class="radio-inline">
+						    	<input ng-model="searchService" type="radio" name="searchService" value="YouTube">YouTube</label>
+
+						  </form>
+					</div>
+				</div>
+
+				<div class="col-sm-1">
+				</div>
+				
+				<div class="col-sm-3 center-block">
+					<!--<button ng-click="callSearchiTunes()" id="searchButton" class="btn btn-primary" value="Search">Search</button>-->
+				</div>
+
+				<div class="col-sm-1">
+				</div>
+			</div>
+
+            <div ng-show="searchService == 'iTunes'" id="iTunesResults">
+                <div class="row" ng-repeat="item in iTunesResults | pagination: iTunesCurPage * iTunesPageSize | limitTo: iTunesPageSize">
+                    <div class="col-sm-12">
+                        <hr>
+                    </div>
+                    <div class="col-sm-3">
+                        <center>
+                            <img class="img-thumbnail" src="{{item.artworkUrl100}}" />
+                        </center>
+                    </div>
+                    <div class="col-sm-2">
+                        <center>
+                            <h5>{{item.trackName}}</h5>
+                            <h5>{{item.artistName}}</h5>
+                            <p>{{item.collectionName}}</p>
+                        </center>
+                    </div>
+                    <div class="col-sm-2">
+                        <center>
+                            <p>
+                                Collection Price: {{item.collectionPrice}}
+                                <br>Track Price: {{item.trackPrice}}
+                            </p>
+                        </center>
+                    </div>
+                    <div class="col-sm-5">
+                        <center>
+                            <audio ng-src="{{item.previewUrl}}" controls></audio>
+                       </center>
+                    </div>
+
+                </div>
+
+                <!--Pagination div --->
+
+                <div class="row pagination-div" ng-show="iTunesResults.length">
+                    <div class="row">
+                        <div class="col-sm-12"><hr /></div>
+                    </div>
+                    <div class="col-sm-2 center-block">
+                        <input type="button" class="btn btn-primary" ng-disabled="iTunesCurPage == 0" ng-click="iTunesCurPage=iTunesCurPage-1" value="Previous">
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-2 bottom">
+                        Page {{iTunesCurPage + 1}} of {{ iTunesNumberOfPages() }}
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-2 center-block">
+                        <input type="button" class="btn btn-primary" ng-disabled="iTunesCurPage >= results.length/iTunesPageSize - 1" ng-click="iTunesCurPage = iTunesCurPage+1" value="Next" />
+                    </div>
+                </div> <!-- Pagination -->
+            </div> <!-- iTunes Results-->
+ 
+            <div ng-show="searchService == 'YouTube'">
+
+                <div class="row" ng-repeat="item in YouTubeResults | pagination: YouTubeCurPage * YouTubePageSize | limitTo: YouTubePageSize">
+                    <div class="col-sm-12">
+                        <hr>
+                    </div>
+                    <div class="col-sm-6">
+                        <center>
+                            <img class="img-thumbnail" src="{{item.snippet.thumbnails.default.url}}" />
+                        </center>
+                    </div>
+                    <div class="col-sm-6">
+                        <center>
+                            <h5><a href="https://www.youtube.com/watch?v={{item.id.videoId}}" target="_blank">Watch: {{item.snippet.title}}</a></h5>
+                        </center>
+                    </div>
+                </div>
+
+                <!--Pagination div --->
+
+                <div class="row pagination-div" ng-show="YouTubeResults.length">
+                    <div class="col-sm-2 center-block">
+                        <input type="button" class="btn btn-primary" ng-disabled="YouTubeCurPage == 0" ng-click="YouTubeCurPage=YouTubeCurPage-1" value="Previous">
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-2 bottom">
+                        Page {{YouTubeCurPage + 1}} of {{ YouTubeNumberOfPages() }}
+                    </div>
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-2 center-block">
+                        <input type="button" class="btn btn-primary" ng-disabled="curPage >= results.length/YouTubePageSize - 1" ng-click="YouTubeCurPage = YouTubeCurPage+1" value="Next" />
+                    </div>
+                </div>
+            </div>
+            </div> <!-- iTunes Controller-->
+
+
+
+            <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+            <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+
+            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+            <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-resource.min.js"></script>
+            <script type="text/javascript" src="../js/angular-search.js"></script>
+
+
+</body>
+</html>
+
+
+

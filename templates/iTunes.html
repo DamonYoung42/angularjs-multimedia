@@ -1,0 +1,52 @@
+﻿<div ng-controller="iTunesCtrl" ng-show="searchService == 'iTunes'">
+    <div class="row" ng-repeat="item in results | pagination: curPage * pageSize | limitTo: pageSize">
+        <div class="col-sm-12">
+            <hr>
+        </div>
+        <div class="col-sm-3">
+            <center>
+                <img class="img-thumbnail" src="{{item.artworkUrl100}}" />
+            </center>
+        </div>
+        <div class="col-sm-2">
+            <center>
+                <h5>{{item.trackName}}</h5>
+                <h5>{{item.artistName}}</h5>
+                <p>{{item.collectionName}}</p>
+            </center>
+        </div>
+        <div class="col-sm-2">
+            <center>
+                <p>
+                    Collection Price: {{item.collectionPrice}}
+                    <br>Track Price: {{item.trackPrice}}
+                </p>
+            </center>
+        </div>
+        <div class="col-sm-5">
+            <center>
+                <audio controls>
+                    <source src="{{item.previewUrl}}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </center>
+        </div>
+
+    </div>
+
+    <!--Pagination div --->
+
+    <div class="row pagination-div" ng-show="results.length">
+        <div class="col-sm-2 center-block">
+            <input type="button" class="btn btn-primary" ng-disabled="curPage == 0" ng-click="curPage=curPage-1" value="Previous">
+        </div>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-2 bottom">
+            Page {{curPage + 1}} of {{ numberOfPages() }}
+        </div>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-2 center-block">
+            <input type="button" class="btn btn-primary" ng-disabled="curPage >= results.length/pageSize - 1" ng-click="curPage = curPage+1" value="Next" />
+        </div>
+    </div>
+</div>
